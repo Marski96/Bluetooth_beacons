@@ -24,10 +24,19 @@ class Socket extends Component {
       return (
           <div style={{textAlign: "center"}}>
               <Paper>
-                  <h1 style={{fontSize: 20}} value={response}>{this.state.response}</h1>
-                  <h2>Currently only counts to 100 </h2>
-                  <h3>TODO: Do not overwrite values, add to list to display detections</h3>
-                  <h4>Start socketio.js to start counting or reset it</h4>
+              <TableBody>
+                        {this.state.response.map(member =>
+                            <TableRow key={member.measument_time}>
+                            <TableCell>{member.beacon_user}</TableCell>
+                            <TableCell>{member.receiver_id}</TableCell>
+                            <TableCell>{member.signal_db}</TableCell>
+                            <TableCell>{member.measument_time}</TableCell>
+                            </TableRow>
+                            )}
+                    </TableBody>
+                  <h2>Currently updating realtime endlessly</h2>
+                  <h3>TODO: Limit queries/data to certain number</h3>
+                  <h4>Works with backend-service.js now</h4>
                   </Paper>
       
           </div>
