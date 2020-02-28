@@ -2,10 +2,11 @@ var express = require('express');
 var mysql = require('mysql');
 var app = express();
 var bodyparser = require('body-parser');
-var ip = require("ip")
-
+var ip = require("ip");
+const socketIo = require("socket.io");
 app.use(bodyparser.json());
 const cors = require('cors');
+const http = require("http");
 app.use(cors());
 
 //##############This is the database connection part##############
@@ -36,6 +37,11 @@ var server = app.listen(4000, function() {
 })
 
 //SQL queries//
+
+
+
+
+
 
 //GET beacon_info from DB
 app.get('/beacon_info', function(req, res) {
@@ -144,3 +150,45 @@ app.post('/new_beacon', upload.none(), function(req,res) {
     res.send(result)
   })
 })
+
+
+
+//socketio
+const socketServer = http.createServer(app);
+const socketPort = 4001;
+socketServer.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+
+
+app.get('/*', (req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+//new connection named socket
+const io = socketIo(socketServer);
+io.on("connection", socket => {
+    console.log("New client connected");
+
+    //data we send named 'data'
+    socket.on("incoming data", (data)=>{
+        //emit&broadcast   num to help ease logging, sub to 'outgoing data' topic
+       socket.broadcast.emit("outgoing data", {num: data});
+    });
+
+    //disconnection log
+    socket.on("disconnect", () => console.log("Client disconnected"));
+});
+
+let socket = require('socket.io-client')('http://127.0.0.1:4001');
+   
+let info = 
+//data here
+setInterval(function () {
+    
+  db.query('SELECT * FROM beacon_detections ORDER BY measument_time DESC limit 50;', (err, rows, fields) => {
+
+   
+      
+    socket.emit('incoming data', rows);
+
+    
+    
+}, 1000);
+})})
