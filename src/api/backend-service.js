@@ -167,9 +167,9 @@ io.on("connection", socket => {
     console.log("New client connected");
 
     //data we send named 'data'
-    socket.on("incoming data", (data)=>{
+    socket.on("beacon_location", (data)=>{
         //emit&broadcast   num to help ease logging, sub to 'outgoing data' topic
-       socket.broadcast.emit("outgoing data", {num: data});
+       socket.broadcast.emit("beacon_location_data", {num: data});
     });
 
     //disconnection log
@@ -182,11 +182,13 @@ let info =
 //data here
 setInterval(function () {
     
-  db.query('SELECT * FROM beacon_detections ORDER BY measument_time DESC limit 50;', (err, rows, fields) => {
+  db.query('(SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "e2:e3:23:d1:b0:54" ORDER BY measument_time DESC limit 1)\
+  UNION (SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "d6:2c:ca:c0:d4:9c" ORDER BY measument_time DESC limit 1)\
+   UNION (SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "f2:36:00:21:c0:50" ORDER BY measument_time DESC limit 1);', (err, rows, fields) => {
 
    
       
-    socket.emit('incoming data', rows);
+    socket.emit('beacon_location', rows);
 
     
     
