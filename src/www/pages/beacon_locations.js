@@ -25,6 +25,15 @@ render() {
         return (
             <div>
                 <Paper>
+                    <Table>
+                    <TableHead>
+                <TableRow>
+                            <TableCell>Beacon ID</TableCell>
+                            <TableCell>Receiver ID</TableCell>
+                            <TableCell>Signal DB</TableCell>
+                            <TableCell>Time</TableCell>
+                        </TableRow>
+                </TableHead>
                 <TableBody>
                         {this.state.response.map(member =>
                             <TableRow key={member.beacon_user}>
@@ -35,6 +44,7 @@ render() {
                             </TableRow>
                             )}
                     </TableBody>
+                    </Table>
                 </Paper>
 
             </div>
