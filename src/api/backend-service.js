@@ -3,11 +3,13 @@ var mysql = require('mysql');
 var app = express();
 var bodyparser = require('body-parser');
 var ip = require("ip");
-const socketIo = require("socket.io");
 app.use(bodyparser.json());
 const cors = require('cors');
 const http = require("http");
 app.use(cors());
+
+
+
 
 //##############This is the database connection part##############
 
@@ -35,6 +37,8 @@ var server = app.listen(4000, function() {
   var port = server.address().port
   console.log('\nBackend-service is running at http://' + host + ':' + port)
 })
+
+
 
 //SQL queries//
 
@@ -64,7 +68,6 @@ app.get('/beacon_info', function(req, res) {
 
 //GET receiver_info from DB
 app.get('/receiver_info', function(req, res) {
-
   db.query('SELECT * FROM receiver_info', (err, rows, fields) => {
 
     if(!err) {
@@ -82,13 +85,14 @@ app.get('/receiver_info', function(req, res) {
 
 //GET Last 50 beacon_detections from DB
 app.get('/beacon_detections', function(req, res) {
-
+  
   db.query('SELECT * FROM beacon_detections ORDER BY measument_time DESC limit 50;', (err, rows, fields) => {
 
     if(!err) {
       console.log(rows, "\n Rows fetched from the database")
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.send(rows)
+      socket.on("disconnect", () => console.log("Client disconnected"));
     }
 
     else {
@@ -154,15 +158,13 @@ app.post('/new_beacon', upload.none(), function(req,res) {
 
 
 //socketio
-const socketServer = http.createServer(app);
-const socketPort = 4001;
-socketServer.listen(socketPort, () => console.log(`Listening on port ${socketPort}`));
+
 
 
 app.get('/*', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
 //new connection named socket
-const io = socketIo(socketServer);
+var io = require('socket.io').listen(server);
 io.on("connection", socket => {
     console.log("New client connected");
 
@@ -172,12 +174,27 @@ io.on("connection", socket => {
        socket.broadcast.emit("beacon_location_data", {num: data});
     });
 
+    socket.on("beacon_info", (data)=>{
+      //emit&broadcast   num to help ease logging, sub to 'outgoing data' topic
+     socket.broadcast.emit("beacon_info_data", {num: data});
+  });
+
+    socket.on("beacon_detections", (data)=>{
+      //emit&broadcast   num to help ease logging, sub to 'outgoing data' topic
+    socket.broadcast.emit("beacon_detections_data", {num: data});
+  });
+
+    socket.on("receiver_info", (data)=>{
+      //emit&broadcast   num to help ease logging, sub to 'outgoing data' topic
+    socket.broadcast.emit("receiver_info_data", {num: data});
+  });
+
     //disconnection log
     socket.on("disconnect", () => console.log("Client disconnected"));
 });
 
-let socket = require('socket.io-client')('http://127.0.0.1:4001');
-   
+let socket = require('socket.io-client')('http://127.0.0.1:4000');
+
 let info = 
 //data here
 setInterval(function () {
@@ -185,12 +202,47 @@ setInterval(function () {
   db.query('(SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "e2:e3:23:d1:b0:54" ORDER BY measument_time DESC limit 1)\
   UNION (SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "d6:2c:ca:c0:d4:9c" ORDER BY measument_time DESC limit 1)\
    UNION (SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "f2:36:00:21:c0:50" ORDER BY measument_time DESC limit 1);', (err, rows, fields) => {
-
-   
-      
+ 
     socket.emit('beacon_location', rows);
 
     
     
 }, 1000);
-})})
+})
+
+setInterval(function () {
+    
+  db.query('SELECT * FROM beacon_info', (err, rows, fields) => {
+ 
+    socket.emit('beacon_info', rows);
+
+    
+    
+}, 1000);
+})
+
+setInterval(function () {
+    
+  db.query('SELECT * FROM beacon_detections ORDER BY measument_time DESC limit 50;', (err, rows, fields) => {
+
+ 
+    socket.emit('beacon_detections', rows);
+
+    
+    
+}, 1000);
+})
+
+setInterval(function () {
+    
+  db.query('SELECT * FROM receiver_info', (err, rows, fields) => {
+
+ 
+    socket.emit('receiver_info', rows);
+
+    
+    
+}, 1000);
+})
+
+})

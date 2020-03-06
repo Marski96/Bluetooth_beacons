@@ -1,25 +1,26 @@
 import React, { Component } from 'react';
 import { Paper, Table, TableRow, TableHead, TableCell, TableBody } from '@material-ui/core';
-
+import socketIOClient from "socket.io-client";
 
 class Beacon_detections extends Component {
     constructor(props) {
         super(props)
         this.state = {
             tieto: []
+            ,response: [],
+            endpoint: 'http://127.0.0.1:4000'
         }
     }
 
 
+
     componentDidMount = () => {
-        fetch('http://localhost:4000/beacon_detections')
-        .then((response) => response.json())
-        .then(responseJson => {
-            this.setState({tieto: responseJson})
-            
-        })
+        const {endpoint} = this.state;
+      //connect io client to specified endpoint
+      const socket = socketIOClient(endpoint);
+      //listen data -> set to state
+      socket.on("beacon_detections_data", data => this.setState({response: data.num}));
         
-            
         }
 
 render() {
@@ -36,7 +37,7 @@ render() {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {this.state.tieto.map(member =>
+                        {this.state.response.map(member =>
                             <TableRow key={member.measument_time}>
                             <TableCell>{member.receiver_id}</TableCell>
                             <TableCell>{member.beacon_id}</TableCell>

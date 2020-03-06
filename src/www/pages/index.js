@@ -6,7 +6,7 @@ import Beacon_detections from './beacon_detections.js';
 import Receiver_info from './receiver_info.js';
 import Beacon_info from './beacon_info.js';
 import Beacon_locations from './beacon_locations.js';
-import Socket from './socket.js';
+
 
 class AdminFrontPage extends Component{
   constructor(props){
@@ -28,7 +28,6 @@ render(){
             <Tab label="Beacon detections" />
             <Tab label="Receiver info" />
             <Tab label="Beacon locations" />
-            <Tab label="Socket IO Test" />
            
           </Tabs>
           
@@ -37,7 +36,7 @@ render(){
         {this.state.value === 1 && <Beacon_detections />}
         {this.state.value === 2 && <Receiver_info />}
         {this.state.value === 3 && <Beacon_locations />}
-        {this.state.value === 4 && <Socket/>}
+
       </div>
     </div>
   )
