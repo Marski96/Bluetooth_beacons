@@ -6,9 +6,11 @@ app.use(bodyparser.json());
 const database = require('../database/connect_to_db')
 const queries = require('../database/queries')
 const alerting = require('../detection/alerts')
+const socketServer = require('../socketio/socketio')
 
 //App, listen this port
-expressPort = 4001;
+socketServer.start();
+expressPort = 4000;
 var server = app.listen(expressPort,()=>console.log('\nExpress is running at port no : ' + expressPort));
 
     //Write instructions to / -page

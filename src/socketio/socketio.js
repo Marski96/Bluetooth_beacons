@@ -3,6 +3,8 @@ const http = require("http");
 const socketIo = require("socket.io");
 const axios = require("axios");
 
+function start(){
+
 const port = 4001;
 const app = express();
 
@@ -36,3 +38,10 @@ const emit = async socket => {
 };
 
 httpServer.listen(port, () => console.log(`Listening on port ${port}`));
+}
+
+module.exports = {
+  start
+
+
+};
