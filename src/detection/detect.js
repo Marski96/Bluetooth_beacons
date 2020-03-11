@@ -7,6 +7,7 @@ const database = require('../database/connect_to_db')
 const queries = require('../database/queries')
 const alerting = require('../detection/alerts')
 const socketServer = require('../socketio/socketio')
+const multer = require('multer');
 
 //App, listen this port
 socketServer.start();
@@ -46,6 +47,48 @@ var server = app.listen(expressPort,()=>console.log('\nExpress is running at por
         }
         })
     });
+
+    //GET beacon_info from DB
+    app.get('/beacon_info', function(req, res) {
+
+    db.query('SELECT * FROM beacon_info', (err, rows, fields) => {
+      
+      if(!err) {
+      console.log(rows, "\n Rows fetched from the database")
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.send(rows)
+      }
+  
+      else {
+      console.log(err)
+      res.send(err)
+      }
+    })
+    
+  });
+
+    //This is essential part of add functionality
+    const storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './uploads')
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.originalname)
+    }
+    })
+    const upload = multer({ storage: storage });
+
+  //Add new beacon
+  app.post('/new_beacon', upload.none(), function(req,res) {
+  
+    console.log(req.body);
+    db.query('INSERT INTO beacon_info (beacon_user, beacon_id) VALUES (?,?)',
+    [req.body.user, req.body.id], function(error, result, fields) {
+  
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.send(result)
+    })
+  })
 
 
     //GET Last 50 beacon_detections from DB
