@@ -18,18 +18,23 @@ class Beacon_locations extends Component {
       const socket = socketIOClient(endpoint);
       //listen data -> set to state
       socket.on("beacon_location_data", data => this.setState({response: data.num}));
-        
+      
         }
 
+    
+        
+
 render() {
+    
         return (
+            
             <div>
                 <Paper>
                     <Table>
                     <TableHead>
                 <TableRow>
-                            <TableCell>Beacon ID</TableCell>
-                            <TableCell>Receiver ID</TableCell>
+                            <TableCell>Beacon User</TableCell>
+                            <TableCell>Receiver Location</TableCell>
                             <TableCell>Signal DB</TableCell>
                             <TableCell>Time</TableCell>
                         </TableRow>
@@ -38,8 +43,8 @@ render() {
                         {this.state.response.map(member =>
                             <TableRow key={member.beacon_user}>
                             <TableCell>{member.beacon_user}</TableCell>
-                            <TableCell>{member.receiver_id}</TableCell>
-                            <TableCell>{member.signal_db}</TableCell>
+                            <TableCell>{member.receiver_location}</TableCell>
+                            <TableCell style= {styles.cellGreen}>{member.signal_db}</TableCell>
                             <TableCell>{member.measument_time}</TableCell>
                             </TableRow>
                             )}
@@ -48,6 +53,7 @@ render() {
                 </Paper>
 
             </div>
+            
 
 
            
@@ -64,6 +70,12 @@ const styles =  {
     },
     headerStyle: {
         textAlign: 'center'
+    },
+    cellRed:{
+        backgroundColor: 'red'
+    },
+    cellGreen:{
+        backgroundColor: 'green'
     }
         
 } ;

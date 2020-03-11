@@ -199,9 +199,26 @@ let info =
 //data here
 setInterval(function () {
     
-  db.query('(SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "e2:e3:23:d1:b0:54" ORDER BY measument_time DESC limit 1)\
-  UNION (SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "d6:2c:ca:c0:d4:9c" ORDER BY measument_time DESC limit 1)\
-   UNION (SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time FROM beacon_detections d JOIN beacon_info i ON (d.beacon_id = i.beacon_id) WHERE d.beacon_id = "f2:36:00:21:c0:50" ORDER BY measument_time DESC limit 1);', (err, rows, fields) => {
+  db.query('(SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time, f.receiver_location \
+    FROM beacon_detections d \
+    JOIN receiver_info f ON (f.receiver_id = d.receiver_id) \
+    JOIN beacon_info i ON (d.beacon_id = i.beacon_id) \
+    WHERE d.beacon_id = "e2:e3:23:d1:b0:54" \
+    ORDER BY measument_time DESC limit 1)\
+    UNION ( \
+    SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time, f.receiver_location \
+    FROM beacon_detections d \
+    JOIN receiver_info f ON (f.receiver_id = d.receiver_id) \
+    JOIN beacon_info i ON (d.beacon_id = i.beacon_id) \
+    WHERE d.beacon_id = "d6:2c:ca:c0:d4:9c" \
+    ORDER BY measument_time DESC limit 1)\
+    UNION ( \
+    SELECT d.receiver_id, i.beacon_user, d.signal_db, d.measument_time, f.receiver_location \
+    FROM beacon_detections d \
+    JOIN receiver_info f ON (f.receiver_id = d.receiver_id) \
+    JOIN beacon_info i ON (d.beacon_id = i.beacon_id) \
+    WHERE d.beacon_id = "f2:36:00:21:c0:50" \
+     ORDER BY measument_time DESC limit 1);', (err, rows, fields) => {
     socket.emit('beacon_location', rows);}, 1000);
     
   db.query('SELECT * FROM beacon_info', (err, rows, fields) => {
