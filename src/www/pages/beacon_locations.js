@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import { Paper, Table, TableRow, TableHead, TableCell, TableBody, Avatar } from '@material-ui/core';
 import socketIOClient from "socket.io-client";
 import { withTranslation } from 'react-i18next';
-import user1 from './jokutyyppixd.jpeg';
-import user2 from './jokutyyppixd2.jpeg';
-import user3 from './jokutyyppixd3.jpeg';
-import user4 from './jokutyyppixd4.JPG';
+import user1 from './beaconuser1.jpg';
+import user2 from './beaconuser2.jpg';
+import user3 from './beaconuser3.jpg';
+import user4 from './beaconuser4.jpg';
 
 class Beacon_locations extends Component {
     constructor(props) {
