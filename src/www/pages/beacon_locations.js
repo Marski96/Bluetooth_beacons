@@ -47,7 +47,7 @@ export default function beacon_locations() {
                             <Avatar
                                 size="xlarge"
                                 rounded
-                                source={require('./jokutyyppi.jpeg')}
+                                source={require('./img/beaconuser1.jpg')}
                                 containerStyle={{ marginLeft: 100, marginRight: 100, marginBottom: 10}}
                             />
 
@@ -65,7 +65,7 @@ export default function beacon_locations() {
                             <Avatar
                                 size="xlarge"
                                 rounded
-                                source={require('./jokutyyppi2.jpeg')}
+                                source={require('./img/beaconuser2.jpg')}
                                 containerStyle={{ marginLeft: 100, marginRight: 100, marginBottom: 10}}
                             />
 
@@ -83,7 +83,7 @@ export default function beacon_locations() {
                             <Avatar
                                 size="xlarge"
                                 rounded
-                                source={require('./jokutyyppi3.jpeg')}
+                                source={require('./img/beaconuser3.jpg')}
                                 containerStyle={{ marginLeft: 100, marginRight: 100, marginBottom: 10}}
                             />
 
@@ -101,7 +101,7 @@ export default function beacon_locations() {
                             <Avatar
                                 size="xlarge"
                                 rounded
-                                source={require('./jokutyyppi.jpeg')}
+                                source={require('./img/beaconuser1.jpg')}
                                 containerStyle={{ marginLeft: 100, marginRight: 100, marginBottom: 10}}
                             />
 
@@ -118,7 +118,7 @@ export default function beacon_locations() {
                             <Avatar
                                 size="xlarge"
                                 rounded
-                                source={require('./jokutyyppi2.jpeg')}
+                                source={require('./img/beaconuser2.jpg')}
                                 containerStyle={{ marginLeft: 100, marginRight: 100, marginBottom: 10}}
                             />
 
@@ -135,7 +135,7 @@ export default function beacon_locations() {
                             <Avatar
                                 size="xlarge"
                                 rounded
-                                source={require('./jokutyyppi3.jpeg')}
+                                source={require('./img/beaconuser3.jpg')}
                                 containerStyle={{ marginLeft: 100, marginRight: 100, marginBottom: 10}}
                             />
 
